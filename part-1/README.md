@@ -107,18 +107,18 @@ Finally, we call the .lambda(), and pass it the handler object:
 
 Now we’ve created a basic scaffold for our skill. If you would like to build this skill with us throughout the series, follow the steps below to kick-start your skill:
 
-1.  Create the skill in the Alexa Developer Console.
+1.  Create the skill in the [Alexa Developer Console](https://developer.amazon.com/alexa/console/ask).
     *   Create a new skill at developer.amazon.com. Call it "Memory Challenge."
     *   Give it an invocation name of "memory game."
-    *   Click on JSON Editor and paste [this](https://github.com/alexa/alexa-guided-walkthrough-using-node-sdk/blob/master/part-1/interaction-model.json) interaction model.
-    *   lick Save and Build Model.
-2.  Create a new AWS Lambda function by following the steps [here](https://github.com/alexa/skill-sample-nodejs-fact/blob/en-US/instructions/2-lambda-function.md), using [this final code](https://github.com/alexa/alexa-guided-walkthrough-using-node-sdk/blob/master/part-1/index.js).
-3.  In the Alexa Developer Console, test your skill in the Test tab by typing the phrase “open memory challenge.”
+    *   Click on JSON Editor and paste this [interaction model](https://github.com/ajot/alexa-guided-walkthrough-using-node-sdk/blob/master/part-1/interaction-model.json).
+    *   Click Save and Build Model.
+2.  [Follow the steps here](https://github.com/alexa/skill-sample-nodejs-fact/blob/en-US/instructions/2-lambda-function.md) to create a new AWS Lambda function, and then paste [this final code](https://github.com/ajot/alexa-guided-walkthrough-using-node-sdk/blob/master/part-1/index.js) in the section titled **Function Code**.
+3.  In the [Alexa Developer Console](https://developer.amazon.com/alexa/console/ask), test your skill in the Test tab by typing the phrase “_open memory challenge_”
 
 ## Source Code for this walkthrough
 
-1. [Final code for the Lambda function](https://github.com/alexa/alexa-guided-walkthrough-using-node-sdk/blob/master/part-1/index.js)
-2. [Interaction model for the skill](https://github.com/alexa/alexa-guided-walkthrough-using-node-sdk/blob/master/part-1/interaction-model.json)
+1. [Final code for the Lambda function](https://github.com/ajot/alexa-guided-walkthrough-using-node-sdk/blob/master/part-1/index.js)
+2. [Interaction model for the skill](https://github.com/ajot/alexa-guided-walkthrough-using-node-sdk/blob/master/part-1/interaction-model.json)
 
 ## What's Next
 In the next code deep dive, we will add some more request handlers to our skill to handle customer requests like, “Alexa, ask memory challenge to start a nerdy memory challenge.” We will be using slots to accept customer input and cater our responses accordingly.
