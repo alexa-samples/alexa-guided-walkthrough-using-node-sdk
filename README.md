@@ -25,4 +25,4 @@ As we build the skill, we will add features to it gradually, testing each one al
 ## Let's begin
 
 1. [Part 1: Introduction to the ASK Software Development Kit for Node.js](https://github.com/alexa/alexa-guided-walkthrough-using-node-sdk/tree/master/part-1)
-2. **Part 2: Coming Soon** - In the next walkthrough, we will add some more request handlers to our skill to handle customer requests like, “Alexa, ask memory challenge to start a nerdy memory challenge.” We will be using slots to accept customer input and cater our responses accordingly.
+2. [Part 2: Introduction to Slots and Session Attributes in the ASK SDK for Node.js](https://github.com/alexa/alexa-guided-walkthrough-using-node-sdk/tree/master/part-2)
