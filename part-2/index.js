@@ -100,6 +100,7 @@ function getNextStory(handlerInput){
 	attributes.lastQuestion = story;
 	handlerInput.attributesManager.setSessionAttributes(attributes);
 	return story;
+
 }
 
 function checkAnswer(handlerInput,answerSlot){
@@ -139,10 +140,19 @@ function shuffle(arr) {
 
 const stories = [
 	{
-		"question":"Jeff loves sports. His favorite sports in the Olympics are ice skating and skiing for the Winter Olympics, and basketball and volleyball for the Summer Olympics. What are Jeffs favorite games for the Winter Olympics?","answer":["skating","ice skating","skiing"]
+		"question":"Jeff loves sports. His favorite sports in the Olympics are ice skating and skiing for the Winter Olympics, and basketball and volleyball for the Summer Olympics. What are John's favorite games for the Winter Olympics?","answer":["skating","ice skating","skiing"]
+	},
+	{
+		"question":"Mike loves sports. His favorite sports in the Olympics are ice skating and skiing for the Winter Olympics, and basketball and volleyball for the Summer Olympics. What are John's favorite games for the Winter Olympics?","answer":["skating","ice skating","skiing"]
 	},
 	{
 		"question":"While traveling, Samantha likes to take her tooth brush, hair brush, face cream, and hair dryer. What does Samantha like to carry when she travels?","answer":["tooth brush","hair brush","hair dryer","face cream"]
+	},
+	{
+		"question":"Mark loves sports. His favorite sports in the Olympics are ice skating and skiing for the Winter Olympics, and basketball and volleyball for the Summer Olympics. What are John's favorite games for the Winter Olympics?","answer":["skating","ice skating","skiing"]
+	},
+	{
+		"question":"While traveling, Jessica likes to take her tooth brush, hair brush, face cream, and hair dryer. What does Samantha like to carry when she travels?","answer":["tooth brush","hair brush","hair dryer","face cream"]
 	}
 ];
 
