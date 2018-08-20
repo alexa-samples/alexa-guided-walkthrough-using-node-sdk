@@ -4,6 +4,8 @@ const WELCOME_MESSAGE = "Welcome to memory challenge. I will read you a short pa
                          and then ask you question based on that. Are you ready?";
 const HELP_MESSAGE = "I will read you a short passage,\
                       and then ask you question based on that. Are you ready?";
+const BACKGROUND_IMAGE_URL = "http://ajotwani.s3.amazonaws.com/alexa/background.png"
+
 
 const LaunchRequestHandler = {
 	canHandle(handlerInput) {
@@ -13,7 +15,20 @@ const LaunchRequestHandler = {
 	handle(handlerInput) {
 		const speechOutput = WELCOME_MESSAGE;
 		const repromptSpeechOutput = HELP_MESSAGE;
-		return handlerInput.responseBuilder
+		var response = "";
+		
+		const attributes = handlerInput.attributesManager.getSessionAttributes();
+
+		if (supportsDisplay(handlerInput)) {
+			const display_type = "BodyTemplate7"
+			const image_url = BACKGROUND_IMAGE_URL;
+			response = getDisplay(handlerInput.responseBuilder, attributes, image_url, display_type)
+		}
+		else{
+			response = handlerInput.responseBuilder
+		}
+
+		return response
 			.speak(speechOutput)
 			.reprompt(repromptSpeechOutput)
 			.getResponse();
@@ -31,7 +46,20 @@ const StoryHandler = {
 	handle(handlerInput) {
 		const story = getNextStory(handlerInput);
 		const speechOutput = story.question;
-		return handlerInput.responseBuilder
+		
+		const attributes = handlerInput.attributesManager.getSessionAttributes();
+		var response = "";
+
+		if (supportsDisplay(handlerInput)) {
+			const image_url = attributes.lastQuestion.image;
+			const display_type = "BodyTemplate2"
+			response = getDisplay(handlerInput.responseBuilder, attributes, image_url, display_type)	
+		}
+		else{
+			response = handlerInput.responseBuilder
+		}
+
+		return response
 			.speak(speechOutput)
 			.reprompt(speechOutput)
 			.getResponse();
@@ -47,16 +75,27 @@ const AnswerHandler = {
            attributes.counter < attributes.storiesDeck.length - 1;
 	},
 	handle(handlerInput) {
-    const attributes = handlerInput.attributesManager.getSessionAttributes();
+    	const attributes = handlerInput.attributesManager.getSessionAttributes();
 		const answerSlot = handlerInput.requestEnvelope.request.intent.slots.answer.value;
-    const result = checkAnswer(handlerInput, answerSlot);
+    	const result = checkAnswer(handlerInput, answerSlot);
 		const story = getNextStory(handlerInput);
 		const speechOutput = result.message + "Here's your " + (attributes.counter + 1) + "th question - " + story.question;
+
+		var response = "";
 
 		attributes.lastResult = result.message;
 		handlerInput.attributesManager.setSessionAttributes(attributes);
 
-		return handlerInput.responseBuilder
+		if (supportsDisplay(handlerInput)) {
+			const image_url = attributes.lastQuestion.image;
+			const display_type = "BodyTemplate2"
+			response = getDisplay(handlerInput.responseBuilder, attributes, image_url, display_type)	
+		}
+		else{
+			response = handlerInput.responseBuilder
+		}
+
+		return response
 			.speak(speechOutput)
 			.reprompt(speechOutput)
 			.getResponse();
@@ -74,12 +113,77 @@ const FinalScoreHandler = {
 	},
 	handle(handlerInput) {
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
-		return handlerInput.responseBuilder
+
+		var response = "";
+		
+		if (supportsDisplay(handlerInput)) {
+			const image_url = BACKGROUND_IMAGE_URL;
+			const display_type = "BodyTemplate7"
+			response = getDisplay(handlerInput.responseBuilder, attributes, image_url, display_type)	
+		}
+		else{
+			response = handlerInput.responseBuilder
+		}
+
+		return response
 			.speak(attributes.lastResult + " Thank you for playing Memory Challenge. Your final score is " + attributes.correctCount + " out of " + (attributes.counter + 1))
 			.getResponse();
 	}
 };
 
+// returns true if the skill is running on a device with a display (show|spot)
+function supportsDisplay(handlerInput) {
+	var hasDisplay =
+	  handlerInput.requestEnvelope.context &&
+	  handlerInput.requestEnvelope.context.System &&
+	  handlerInput.requestEnvelope.context.System.device &&
+	  handlerInput.requestEnvelope.context.System.device.supportedInterfaces &&
+	  handlerInput.requestEnvelope.context.System.device.supportedInterfaces.Display
+	return hasDisplay;
+  }
+
+function getDisplay(response, attributes, image_url, display_type){
+	const image = new Alexa.ImageHelper().addImageInstance(image_url).getImage();
+	const current_score = attributes.correctCount;
+	let display_score = ""
+	console.log("the display type is => " + display_type);
+
+	if (typeof attributes.correctCount !== 'undefined'){
+		display_score = "Score: " + current_score;
+	}
+	else{
+		display_score = "Score: 0. Let's get started!";
+	}
+
+	const myTextContent = new Alexa.RichTextContentHelper()
+	.withPrimaryText('Question #' + (attributes.counter + 1) + "<br/>")
+	.withSecondaryText(attributes.lastResult)
+	.withTertiaryText("<br/> <font size='4'>" + display_score + "</font>")
+	.getTextContent();
+	
+	if (display_type == "BodyTemplate7"){
+		//use background image
+		response.addRenderTemplateDirective({
+			type: display_type,
+			backButton: 'visible',
+			backgroundImage: image,
+			title:"Memory Challenge",
+			textContent: myTextContent,
+			});	
+	}
+	else{
+		response.addRenderTemplateDirective({
+			//use 340x340 image on the right with text on the left.
+			type: display_type,
+			backButton: 'visible',
+			image: image,
+			title:"Memory Challenge",
+			textContent: myTextContent,
+			});	
+	}
+	
+	return response
+}
 
 function getNextStory(handlerInput){
 	const attributes = handlerInput.attributesManager.getSessionAttributes();
@@ -139,19 +243,19 @@ function shuffle(arr) {
 
 const stories = [
 	{
-		"question":"Jeff loves sports. His favorite sports in the Olympics are ice skating and skiing for the Winter Olympics, and basketball and volleyball for the Summer Olympics. What are Jeff's favorite games for the Winter Olympics?","answer":["skating","ice skating","skiing"]
+		"question":"Jeff loves sports. His favorite sports in the Olympics are ice skating and skiing for the Winter Olympics, and basketball and volleyball for the Summer Olympics. What are Jeff's favorite games for the Winter Olympics?","answer":["skating","ice skating","skiing"],"image":"https://ajotwani.s3.amazonaws.com/alexa/winter2.png"
 	},
 	{
-		"question":"Mike loves sports. His favorite sports in the Olympics are ice skating and skiing for the Winter Olympics, and basketball and volleyball for the Summer Olympics. What are Mike's favorite games for the Winter Olympics?","answer":["skating","ice skating","skiing"]
+		"question":"Mike loves sports. His favorite sports in the Olympics are ice skating and skiing for the Winter Olympics, and basketball and volleyball for the Summer Olympics. What are John's favorite games for the Winter Olympics?","answer":["skating","ice skating","skiing"],"image":"https://ajotwani.s3.amazonaws.com/alexa/winter2.png"
 	},
 	{
-		"question":"While traveling, Samantha likes to take her tooth brush, hair brush, face cream, and hair dryer. What does Samantha like to carry when she travels?","answer":["tooth brush","hair brush","hair dryer","face cream"]
+		"question":"While traveling, Samantha likes to take her tooth brush, hair brush, face cream, and hair dryer. What does Samantha like to carry when she travels?","answer":["tooth brush","hair brush","hair dryer","face cream"],"image":"https://ajotwani.s3.amazonaws.com/alexa/travel2.png"
 	},
 	{
-		"question":"John loves sports. His favorite sports in the Olympics are ice skating and skiing for the Winter Olympics, and basketball and volleyball for the Summer Olympics. What are John's favorite games for the Winter Olympics?","answer":["skating","ice skating","skiing"]
+		"question":"Mark loves sports. His favorite sports in the Olympics are ice skating and skiing for the Winter Olympics, and basketball and volleyball for the Summer Olympics. What are John's favorite games for the Winter Olympics?","answer":["skating","ice skating","skiing"],"image":"https://ajotwani.s3.amazonaws.com/alexa/winter2.png"
 	},
 	{
-		"question":"While traveling, Jessica likes to take her tooth brush, hair brush, face cream, and hair dryer. What does Jessica like to carry when she travels?","answer":["tooth brush","hair brush","hair dryer","face cream"]
+		"question":"While traveling, Jessica likes to take her tooth brush, hair brush, face cream, and hair dryer. What does Samantha like to carry when she travels?","answer":["tooth brush","hair brush","hair dryer","face cream"],"image":"https://ajotwani.s3.amazonaws.com/alexa/travel2.png"
 	}
 ];
 
