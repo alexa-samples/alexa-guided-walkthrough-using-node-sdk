@@ -16,7 +16,7 @@ const LaunchRequestHandler = {
 		const speechOutput = WELCOME_MESSAGE;
 		const repromptSpeechOutput = HELP_MESSAGE;
 		var response = "";
-		
+
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 
 		if (supportsDisplay(handlerInput)) {
@@ -46,14 +46,14 @@ const StoryHandler = {
 	handle(handlerInput) {
 		const story = getNextStory(handlerInput);
 		const speechOutput = story.question;
-		
+
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
 		var response = "";
 
 		if (supportsDisplay(handlerInput)) {
 			const image_url = attributes.lastQuestion.image;
 			const display_type = "BodyTemplate2"
-			response = getDisplay(handlerInput.responseBuilder, attributes, image_url, display_type)	
+			response = getDisplay(handlerInput.responseBuilder, attributes, image_url, display_type)
 		}
 		else{
 			response = handlerInput.responseBuilder
@@ -75,9 +75,9 @@ const AnswerHandler = {
            attributes.counter < attributes.storiesDeck.length - 1;
 	},
 	handle(handlerInput) {
-    	const attributes = handlerInput.attributesManager.getSessionAttributes();
+    const attributes = handlerInput.attributesManager.getSessionAttributes();
 		const answerSlot = handlerInput.requestEnvelope.request.intent.slots.answer.value;
-    	const result = checkAnswer(handlerInput, answerSlot);
+    const result = checkAnswer(handlerInput, answerSlot);
 		const story = getNextStory(handlerInput);
 		const speechOutput = result.message + "Here's your " + (attributes.counter + 1) + "th question - " + story.question;
 
@@ -89,7 +89,7 @@ const AnswerHandler = {
 		if (supportsDisplay(handlerInput)) {
 			const image_url = attributes.lastQuestion.image;
 			const display_type = "BodyTemplate2"
-			response = getDisplay(handlerInput.responseBuilder, attributes, image_url, display_type)	
+			response = getDisplay(handlerInput.responseBuilder, attributes, image_url, display_type)
 		}
 		else{
 			response = handlerInput.responseBuilder
@@ -113,13 +113,17 @@ const FinalScoreHandler = {
 	},
 	handle(handlerInput) {
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
+    const answerSlot = handlerInput.requestEnvelope.request.intent.slots.answer.value;
+    const result = checkAnswer(handlerInput, answerSlot);
 
-		var response = "";
-		
-		if (supportsDisplay(handlerInput)) {
+    var response = "";
+
+    attributes.lastResult = result.message;
+		handlerInput.attributesManager.setSessionAttributes(attributes);
+    if (supportsDisplay(handlerInput)) {
 			const image_url = BACKGROUND_IMAGE_URL;
 			const display_type = "BodyTemplate7"
-			response = getDisplay(handlerInput.responseBuilder, attributes, image_url, display_type)	
+			response = getDisplay(handlerInput.responseBuilder, attributes, image_url, display_type)
 		}
 		else{
 			response = handlerInput.responseBuilder
@@ -160,7 +164,7 @@ function getDisplay(response, attributes, image_url, display_type){
 	.withSecondaryText(attributes.lastResult)
 	.withTertiaryText("<br/> <font size='4'>" + display_score + "</font>")
 	.getTextContent();
-	
+
 	if (display_type == "BodyTemplate7"){
 		//use background image
 		response.addRenderTemplateDirective({
@@ -169,7 +173,7 @@ function getDisplay(response, attributes, image_url, display_type){
 			backgroundImage: image,
 			title:"Memory Challenge",
 			textContent: myTextContent,
-			});	
+			});
 	}
 	else{
 		response.addRenderTemplateDirective({
@@ -179,9 +183,9 @@ function getDisplay(response, attributes, image_url, display_type){
 			image: image,
 			title:"Memory Challenge",
 			textContent: myTextContent,
-			});	
+			});
 	}
-	
+
 	return response
 }
 
@@ -213,14 +217,14 @@ function checkAnswer(handlerInput,answerSlot){
 
 	if (attributes.lastQuestion.answer.includes(answerSlot)){
 		console.log("correct");
-		message = "Yup! " + answerSlot + " is correct. ";
+		message = "Yup! " + capitalizeFirstLetter(answerSlot) + " is correct. ";
 		attributes.correctCount += 1;
 		status =true;
 
 	}
 	else{
 		console.log("wrong");
-		message = "Nope! " + answerSlot + " is incorrect. ";
+		message = "Nope! " + capitalizeFirstLetter(answerSlot) + " is incorrect. ";
 		attributes.wrongCount += 1;
 		status = false;
 	}
@@ -239,6 +243,10 @@ function shuffle(arr) {
 		arr[index] = temp;
 	}
 	return arr;
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 const stories = [
