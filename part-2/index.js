@@ -80,7 +80,7 @@ const FinalScoreHandler = {
     attributes.lastResult = result.message;
 		handlerInput.attributesManager.setSessionAttributes(attributes);
     return handlerInput.responseBuilder
-			.speak(attributes.lastResult + " Thank you for playing Memory Challenge. Your final score is " + attributes.correctCount + " out of " + (attributes.counter + 1))
+			.speak(attributes.lastResult + " Thank you for playing Memory Challenge. Your final score is " + attributes.correctCount + " out of " + (attributes.counter))
 			.getResponse();
 	}
 };
