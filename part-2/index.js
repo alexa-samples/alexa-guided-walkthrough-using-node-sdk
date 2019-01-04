@@ -74,8 +74,13 @@ const FinalScoreHandler = {
 	},
 	handle(handlerInput) {
 		const attributes = handlerInput.attributesManager.getSessionAttributes();
-		return handlerInput.responseBuilder
-			.speak(attributes.lastResult + " Thank you for playing Memory Challenge. Your final score is " + attributes.correctCount + " out of " + (attributes.counter + 1))
+    const answerSlot = handlerInput.requestEnvelope.request.intent.slots.answer.value;
+    const result = checkAnswer(handlerInput, answerSlot);
+
+    attributes.lastResult = result.message;
+		handlerInput.attributesManager.setSessionAttributes(attributes);
+    return handlerInput.responseBuilder
+			.speak(attributes.lastResult + " Thank you for playing Memory Challenge. Your final score is " + attributes.correctCount + " out of " + (attributes.counter))
 			.getResponse();
 	}
 };
@@ -109,14 +114,14 @@ function checkAnswer(handlerInput,answerSlot){
 
 	if (attributes.lastQuestion.answer.includes(answerSlot)){
 		console.log("correct");
-		message = "Yup! " + answerSlot + " is correct. ";
+		message = "Yup! " + capitalizeFirstLetter(answerSlot) + " is correct. ";
 		attributes.correctCount += 1;
 		status =true;
 
 	}
 	else{
 		console.log("wrong");
-		message = "Nope! " + answerSlot + " is incorrect. ";
+		message = "Nope! " + capitalizeFirstLetter(answerSlot) + " is incorrect. ";
 		attributes.wrongCount += 1;
 		status = false;
 	}
@@ -135,6 +140,10 @@ function shuffle(arr) {
 		arr[index] = temp;
 	}
 	return arr;
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 const stories = [
