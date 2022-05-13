@@ -1,5 +1,8 @@
 # Alexa Skill Guided Walkthrough using the Node.js SDK v2
 
+# ** This repository has been archived **
+This repository is still available as a point-in-time reference, but no further updates or support will be prioritized.
+
 We recently released [version two of the Alexa Skills Kit (ASK) Software Development Kit (SDK) for Node.js](https://developer.amazon.com/blogs/alexa/post/decb3931-2c81-497d-85e4-8fbb5ffb1114/now-available-version-2-of-the-ask-software-development-kit-for-node-js), which introduced a fresh approach to handling requests and responses (among many other enhancements to the SDK). In our new code deep dive series, we’ll show you the ins and outs of the new SDK by providing a step-by-step code overview of the new features. We will also build a new skill from scratch, bit by bit, as we progress through the series.
 
 Throughout this series, we will create a listening retention memory game skill that will help customers improve their listening skills in a fun way. Alexa will read a short passage and then ask customers one or more questions related to that passage. Alexa will generate the passages at random. If customer gets a question right, they get points! Eventually they could earn badges and other engaging experiences along the way.
